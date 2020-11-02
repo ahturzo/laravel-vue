@@ -23,7 +23,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware(['auth'])->group(function()
 {
-    Route::get('/{anypath}', 'HomeController@index')->where('path', '.*');
+//    Route::get('/{anypath}', 'HomeController@index')->where('path', '.*');
+//    Route::get('/{any}', function () {
+//        return view('public.master');
+//    })->where('any', '.*');
 
     // Backend Routes
     Route::group([
@@ -33,7 +36,12 @@ Route::middleware(['auth'])->group(function()
         'middleware' => ['auth'],
     ], function ()
     {
+//        Route::group([ 'prefix' => 'post', 'as' => 'post.' ], function () {
+//            Route::post('add_category', 'CategoryController@add_category');
+//        });
         Route::resource('post', 'PostController');
+
+        Route::resource('category', 'CategoryController');
 
     });
 });

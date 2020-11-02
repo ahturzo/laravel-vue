@@ -20,15 +20,14 @@
                         <div class="card-header"></div>
                         <div class="card-content collapse show">
                             <div class="card-body card-dashboard">
-                                <form method="post" action="">
+                                <form>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <fieldset>
-                                                <h5>Chapter Name <small>*</small></h5>
-                                                <div class="form-group">
-                                                    <input type="text" id="name" name="name" class="form-control" required placeholder="Enter Category name">
-                                                </div>
-                                            </fieldset>
+                                            <div class="form-group">
+                                                <label for="name" class="text-danger"><b style="color:#00008B;">Chapter Name</b> *</label>
+                                                <input type="text" id="name" name="name" class="form-control" :class="{ 'is-invalid': form.errors.has('name') }" required placeholder="Enter Category name" v-model="form.name">
+                                                <has-error :form="form" field="name"></has-error>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -37,7 +36,7 @@
                                             <small class="text-danger">Fill the form correctly with all mandatory fields(*) and click the “Save” button.</small>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="submit" name="submit" id="submit" value="Save" class="btn btn-sm btn-success pull-right">
+                                            <input type="submit" name="submit" id="submit" @click.prevent="addCategory()" value="Save" class="btn btn-sm btn-success pull-right">
                                         </div>
                                     </div>
                                 </form>
@@ -52,7 +51,37 @@
 
 <script>
     export default {
-        name: "Create"
+        name: "Create",
+        data(){
+            return {
+                // Create a new form instance
+                form: new Form({
+                    name: '',
+                })
+            }
+        },
+        methods:{
+            addCategory(){
+                this.form.post('/category')
+                .then((response) => {
+                    this.$router.push('/category-list')
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Category created successfully!!!'
+                    })
+                })
+                .catch((e) => {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: e.response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
+            }
+        }
     }
 </script>
 
