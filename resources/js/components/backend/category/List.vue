@@ -38,8 +38,8 @@
                                             <td>{{ category.name }}</td>
                                             <td>{{ category.created_at | dateFormat }}</td>
                                             <td>
-                                                <a href="" class="btn btn-sm btn-warning" title="Edit Category"><i class="fa fa-pencil-square-o"></i></a>
-                                                <a href="" class="btn btn-sm btn-danger" title="Delete Category"><i class="fa fa-trash"></i></a>
+                                                <router-link :to="`/edit-category/${category.id}`" class="btn btn-sm btn-warning" title="Edit Category"><i class="fa fa-pencil-square-o"></i></router-link>
+                                                <a href="" @click.prevent="deleteCategory(category.id)" class="btn btn-sm btn-danger" title="Delete Category"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -84,6 +84,35 @@
                     "responsive": true,
                     "autoWidth": false,
                 });
+            },
+            deleteCategory(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete this category???",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Vue.axios.delete('category/'+id,{_method: 'delete'})
+                            .then((response) => {
+                                this.$store.dispatch('allCategory');
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Category Deleted successfully'
+                                });
+                            })
+                        .catch((e) => {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Error Deleting Category'
+                            });
+                        })
+
+                    }
+                })
             }
         }
     }

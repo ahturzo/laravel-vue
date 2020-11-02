@@ -65,9 +65,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return json_encode($category, 200);
     }
 
     /**
@@ -77,9 +77,23 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $id = $category->id;
+        $data = $request->validate([
+            'name'   => ['required', 'string', "unique:categories,name,$id"],
+        ]);
+        if($data)
+        {
+            if($category->name == $data['name'])
+                return response()->json(['message' => 'Nothing To change!!!'], 422);
+            else
+            {
+                return Category::where('id', $category->id)->update([
+                    'name'      => $data['name']
+                ]);
+            }
+        }
     }
 
     /**
@@ -90,6 +104,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::destroy($id);
     }
 }

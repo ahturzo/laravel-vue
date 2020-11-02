@@ -23,16 +23,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware(['auth'])->group(function()
 {
-//    Route::get('/{anypath}', 'HomeController@index')->where('path', '.*');
-//    Route::get('/{any}', function () {
-//        return view('public.master');
-//    })->where('any', '.*');
-
     // Backend Routes
     Route::group([
         'namespace' => 'Backend',
-        // 'as' => 'workbucket.',
-        // 'prefix' => 'workbucket',
         'middleware' => ['auth'],
     ], function ()
     {
@@ -45,3 +38,7 @@ Route::middleware(['auth'])->group(function()
 
     });
 });
+
+Route::get('/{anypath}', 'HomeController@index')->where('path', '.*');
+Route::get('/{anypath}/{id}', 'HomeController@index')->where('path', '.*');
+

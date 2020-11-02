@@ -12,6 +12,11 @@ const store = new Vuex.Store(
 // support moment js
 import {filter} from './filter'
 
+// vue axios
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
+
 //vue router
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
@@ -44,7 +49,7 @@ const Toast = Swal.mixin({
 window.Toast = Toast;
 
 const router = new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     routes // short for `routes: routes`
 })
 
