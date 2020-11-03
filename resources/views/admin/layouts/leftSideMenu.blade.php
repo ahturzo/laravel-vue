@@ -9,8 +9,8 @@
 
             <li class=" nav-item"><a href=""><i class="icon-home"></i><span class="menu-title" data-i18n="nav.dash.main">Post</span></a>
                 <ul class="menu-content">
-                    <li><a class="menu-item" href="" data-i18n="nav.dash.project">Category</a></li>
-                    <li><router-link class="menu-item" to="post" data-i18n="nav.dash.fitness">All Post</router-link></li>
+                    <li><router-link class="menu-item" to="category-list" data-i18n="nav.dash.project">Category</router-link></li>
+                    <li><router-link class="menu-item" to="all-post" data-i18n="nav.dash.fitness">All Post</router-link></li>
                 </ul>
             </li>
 

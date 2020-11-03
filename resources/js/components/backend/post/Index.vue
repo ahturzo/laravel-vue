@@ -2,13 +2,13 @@
     <div>
         <div class="content-header row">
             <div class="content-header-left col-md-6 col-12 mb-1">
-                <h3 class="content-header-title">All Category</h3>
+                <h3 class="content-header-title">All Post</h3>
             </div>
             <div class="content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-12">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><router-link to="/home">Home</router-link></li>
-                        <li class="breadcrumb-item active">Category</li>
+                        <li class="breadcrumb-item active">Post</li>
                     </ol>
                 </div>
             </div>
@@ -19,29 +19,36 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Category List
-                                <router-link to="/category-create" class="btn btn-primary btn-round btn-sm float-right"><i class="fa fa-plus"></i> Add Category</router-link>
+                            <h4 class="card-title">Post List
+                                <router-link to="/create-post" class="btn btn-primary btn-round btn-sm float-right"><i class="fa fa-plus"></i> Add Post</router-link>
                             </h4>
                         </div>
                         <div class="card-content collapse show">
                             <div class="card-body card-dashboard">
-                                <table class="table table-striped table-bordered default-ordering" id="datatable">
+                                <table class="table table-striped table-hover table-bordered default-ordering" id="datatable">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Category</th>
+                                            <th>Content</th>
                                             <th>Created at</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(category,index) in getAllCategory" :key="category.id">
+                                        <tr v-for="(post,index) in allPost" :key="post.id">
                                             <td>{{ index+1 }}</td>
-                                            <td>{{ category.name }}</td>
-                                            <td>{{ category.created_at | dateFormat }}</td>
+                                            <td>{{ post.title }}</td>
+                                            <td>{{ post.description | shortLength(30, '.....') }}</td>
+                                            <td>{{ post.category.name }}</td>
+                                            <td><img :src="post.content" width="40" height="50"></td>
+                                            <td>{{ post.created_at | dateFormat }}</td>
                                             <td>
-                                                <router-link :to="`/edit-category/${category.id}`" class="btn btn-sm btn-warning" title="Edit Category"><i class="fa fa-pencil-square-o"></i></router-link>
-                                                <a href="" @click.prevent="deleteCategory(category.id)" class="btn btn-sm btn-danger" title="Delete Category"><i class="fa fa-trash"></i></a>
+                                                <a href="" class="btn btn-sm btn-primary" title="View Post"><i class="fa fa-eye"></i></a>
+                                                <a href="" class="btn btn-sm btn-warning" title="Edit Post"><i class="fa fa-pencil-square-o"></i></a>
+                                                <a href="" class="btn btn-sm btn-danger" title="Delete Post"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -57,7 +64,7 @@
 
 <script>
     export default {
-        name: "List",
+        name: "Index",
         created() {
             var scripts = [
                 "robust/app-assets/vendors/js/tables/datatable/datatables.min.js"
@@ -69,15 +76,15 @@
             });
         },
         mounted() {
-            this.$store.dispatch("allCategory")
+            this.$store.dispatch("allPost")
             setTimeout(function (evt) {
                 this.jqueryFunction();
             }.bind(this), 1000);
         },
         computed:{
-            getAllCategory()
+            allPost()
             {
-                return this.$store.getters.getCategory
+                return this.$store.getters.getAllPost
             }
         },
         methods: {
@@ -86,35 +93,6 @@
                     "responsive": true,
                     "autoWidth": false,
                 });
-            },
-            deleteCategory(id){
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You want to delete this category???",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Vue.axios.delete('category/'+id,{_method: 'delete'})
-                            .then((response) => {
-                                this.$store.dispatch('allCategory');
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Category Deleted successfully'
-                                });
-                            })
-                        .catch((e) => {
-                            Toast.fire({
-                                icon: 'error',
-                                title: 'Error Deleting Category'
-                            });
-                        })
-
-                    }
-                })
             }
         }
     }

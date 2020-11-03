@@ -21,6 +21,10 @@ Vue.use(VueAxios, axios)
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+// ckeditor
+import CKEditor from 'ckeditor4-vue';
+Vue.use(CKEditor);
+
 import {routes} from './routes';
 Vue.component('admin-master', require('./components/backend/AdminMaster.vue').default);
 
