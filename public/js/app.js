@@ -2753,6 +2753,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "List",
   created: function created() {
@@ -2776,10 +2779,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     jqueryFunction: function jqueryFunction() {
-      $('#datatable').DataTable({
-        "responsive": true,
-        "autoWidth": false
-      });
+      $('#datatable').DataTable();
     },
     deleteCategory: function deleteCategory(id) {
       var _this = this;
@@ -2951,29 +2951,43 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var file = event.target.files[0];
-      var reader = new FileReader();
 
-      reader.onload = function (event) {
-        _this.form.content = event.target.result; // console.log(e.target.result)
-      };
+      if (file.size > 1073741824) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: "File can't greater than 1GB!!!",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        var reader = new FileReader();
 
-      reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          _this.form.content = event.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
     },
     addPost: function addPost() {
+      var _this2 = this;
+
       this.form.post('/post').then(function (response) {
-        console.log(response.data); // this.$router.push('/all-post')
-        //
-        // Toast.fire({
-        //     icon: 'success',
-        //     title: 'Post created successfully!!!'
-        // })
+        _this2.$router.push('/all-post');
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Post created successfully!!!'
+        });
       })["catch"](function (e) {
+        console.log(e.response.data.message);
         Swal.fire({
           position: 'top-end',
           icon: 'error',
           title: e.response.data.message,
           showConfirmButton: false,
-          timer: 1500
+          timer: 50000
         });
       });
     }
@@ -2995,8 +3009,131 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "Edit"
+  name: "Edit",
+  created: function created() {},
+  data: function data() {
+    return {
+      form: new Form({
+        title: '',
+        category_id: '',
+        description: '',
+        content: ''
+      }),
+      editorConfig: {}
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    var id = this.$route.params.postid;
+    this.$store.dispatch("allCategory");
+    axios.get('/post/' + id + '/edit').then(function (response) {
+      _this.form.fill(response.data);
+    });
+    setTimeout(function (evt) {
+      this.jqueryFunction();
+    }.bind(this), 1000);
+  },
+  computed: {
+    getAllCategory: function getAllCategory() {
+      return this.$store.getters.getCategory;
+    }
+  },
+  methods: {
+    jqueryFunction: function jqueryFunction() {},
+    updatePost: function updatePost() {
+      var _this2 = this;
+
+      var id = this.$route.params.postid;
+      this.form.patch('/post/' + id).then(function (response) {
+        _this2.$router.push('/all-post');
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Post created successfully!!!'
+        });
+      })["catch"](function (e) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: e.response.data.message,
+          showConfirmButton: false,
+          timer: 50000
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3010,6 +3147,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3097,9 +3239,34 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     jqueryFunction: function jqueryFunction() {
-      $('#datatable').DataTable({
-        "responsive": true,
-        "autoWidth": false
+      $('#datatable').DataTable();
+    },
+    deletePost: function deletePost(id) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete this Post???",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          Vue.axios["delete"]('post/' + id, {
+            _method: 'delete'
+          }).then(function (response) {
+            console.log(response.data); // this.$store.dispatch('allPost');
+            // Toast.fire({
+            //     icon: 'success',
+            //     title: 'Post Deleted successfully'
+            // });
+          })["catch"](function (e) {
+            Toast.fire({
+              icon: 'error',
+              title: e.response.data.message
+            });
+          });
+        }
       });
     }
   }
@@ -67600,72 +67767,76 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "card-content collapse show" }, [
               _c("div", { staticClass: "card-body card-dashboard" }, [
-                _c(
-                  "table",
-                  {
-                    staticClass:
-                      "table table-striped table-bordered default-ordering",
-                    attrs: { id: "datatable" }
-                  },
-                  [
-                    _vm._m(1),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.getAllCategory, function(category, index) {
-                        return _c("tr", { key: category.id }, [
-                          _c("td", [_vm._v(_vm._s(index + 1))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(category.name))]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(_vm._f("dateFormat")(category.created_at))
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "td",
-                            [
-                              _c(
-                                "router-link",
-                                {
-                                  staticClass: "btn btn-sm btn-warning",
-                                  attrs: {
-                                    to: "/edit-category/" + category.id,
-                                    title: "Edit Category"
-                                  }
-                                },
-                                [
-                                  _c("i", {
-                                    staticClass: "fa fa-pencil-square-o"
-                                  })
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "btn btn-sm btn-danger",
-                                  attrs: { href: "", title: "Delete Category" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.deleteCategory(category.id)
-                                    }
-                                  }
-                                },
-                                [_c("i", { staticClass: "fa fa-trash" })]
+                _c("div", { staticClass: "table-responsive" }, [
+                  _c(
+                    "table",
+                    {
+                      staticClass:
+                        "table table-striped table-bordered default-ordering",
+                      attrs: { id: "datatable" }
+                    },
+                    [
+                      _vm._m(1),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.getAllCategory, function(category, index) {
+                          return _c("tr", { key: category.id }, [
+                            _c("td", [_vm._v(_vm._s(index + 1))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(category.name))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("dateFormat")(category.created_at)
+                                )
                               )
-                            ],
-                            1
-                          )
-                        ])
-                      }),
-                      0
-                    )
-                  ]
-                )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              [
+                                _c(
+                                  "router-link",
+                                  {
+                                    staticClass: "btn btn-sm btn-warning",
+                                    attrs: {
+                                      to: "/edit-category/" + category.id,
+                                      title: "Edit Category"
+                                    }
+                                  },
+                                  [
+                                    _c("i", {
+                                      staticClass: "fa fa-pencil-square-o"
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-sm btn-danger",
+                                    attrs: { title: "Delete Category" },
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.deleteCategory(category.id)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fa fa-trash" })]
+                                )
+                              ],
+                              1
+                            )
+                          ])
+                        }),
+                        0
+                      )
+                    ]
+                  )
+                ])
               ])
             ])
           ])
@@ -67949,6 +68120,7 @@ var render = function() {
                               },
                               attrs: {
                                 type: "file",
+                                accept: "video, image",
                                 id: "file",
                                 name: "content"
                               },
@@ -68108,9 +68280,317 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", [
+    _c("div", { staticClass: "content-header row" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "content-header-right breadcrumbs-right breadcrumbs-top col-md-6 col-12"
+        },
+        [
+          _c("div", { staticClass: "breadcrumb-wrapper col-12" }, [
+            _c("ol", { staticClass: "breadcrumb" }, [
+              _c(
+                "li",
+                { staticClass: "breadcrumb-item" },
+                [
+                  _c("router-link", { attrs: { to: "/home" } }, [
+                    _vm._v("Home")
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "li",
+                { staticClass: "breadcrumb-item" },
+                [
+                  _c("router-link", { attrs: { to: "/all-post" } }, [
+                    _vm._v("All Post")
+                  ])
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("li", { staticClass: "breadcrumb-item active" }, [
+                _vm._v("Edit")
+              ])
+            ])
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("section", { attrs: { id: "ordering" } }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-12" }, [
+          _c(
+            "div",
+            { staticClass: "card bg-gradient-striped-yellow box-shadow-0" },
+            [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-content collapse show" }, [
+                _c("div", { staticClass: "card-body card-dashboard" }, [
+                  _c("form", [
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _vm._m(2),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.form.title,
+                                  expression: "form.title"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: {
+                                "is-invalid": _vm.form.errors.has("title")
+                              },
+                              attrs: {
+                                type: "text",
+                                id: "title",
+                                name: "title",
+                                placeholder: "Enter Blog Title"
+                              },
+                              domProps: { value: _vm.form.title },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.form,
+                                    "title",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("has-error", {
+                              attrs: { form: _vm.form, field: "title" }
+                            })
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _vm._m(3),
+                            _vm._v(" "),
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.category_id,
+                                    expression: "form.category_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "category_id"
+                                  )
+                                },
+                                attrs: { id: "category_id" },
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.$set(
+                                      _vm.form,
+                                      "category_id",
+                                      $event.target.multiple
+                                        ? $$selectedVal
+                                        : $$selectedVal[0]
+                                    )
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "" } }, [
+                                  _vm._v("Select Post Category...")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.getAllCategory, function(category) {
+                                  return _c(
+                                    "option",
+                                    { domProps: { value: category.id } },
+                                    [_vm._v(_vm._s(category.name))]
+                                  )
+                                })
+                              ],
+                              2
+                            ),
+                            _vm._v(" "),
+                            _c("has-error", {
+                              attrs: { form: _vm.form, field: "category_id" }
+                            })
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c("ckeditor", {
+                              class: {
+                                "is-invalid": _vm.form.errors.has("description")
+                              },
+                              attrs: {
+                                id: "description",
+                                config: _vm.editorConfig
+                              },
+                              model: {
+                                value: _vm.form.description,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.form, "description", $$v)
+                                },
+                                expression: "form.description"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("has-error", {
+                              attrs: { form: _vm.form, field: "description" }
+                            })
+                          ],
+                          1
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm._m(5),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-3" }, [
+                        _c("input", {
+                          staticClass: "btn btn-sm btn-success pull-right",
+                          attrs: {
+                            type: "submit",
+                            name: "submit",
+                            id: "submit",
+                            value: "Update"
+                          },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.updatePost()
+                            }
+                          }
+                        })
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ]
+          )
+        ])
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "content-header-left col-md-6 col-12 mb-1" },
+      [_c("h3", { staticClass: "content-header-title" }, [_vm._v("Post")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h4", { staticClass: "card-title" }, [_vm._v("Add New Post")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "text-danger", attrs: { for: "title" } },
+      [
+        _c("b", { staticStyle: { color: "#00008B" } }, [_vm._v("Title")]),
+        _vm._v(" *")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "text-danger", attrs: { for: "category_id" } },
+      [
+        _c("b", { staticStyle: { color: "#00008B" } }, [_vm._v("Category")]),
+        _vm._v(" *")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticClass: "text-danger", attrs: { for: "description" } },
+      [
+        _c("b", { staticStyle: { color: "#00008B" } }, [_vm._v("Description")]),
+        _vm._v(" *")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-9" }, [
+      _c("small", { staticClass: "text-danger" }, [
+        _vm._v(
+          "Fill the form correctly with all mandatory fields(*) and click the “Save” button."
+        )
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -68194,61 +68674,104 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "card-content collapse show" }, [
               _c("div", { staticClass: "card-body card-dashboard" }, [
-                _c(
-                  "table",
-                  {
-                    staticClass:
-                      "table table-striped table-hover table-bordered default-ordering",
-                    attrs: { id: "datatable" }
-                  },
-                  [
-                    _vm._m(1),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.allPost, function(post, index) {
-                        return _c("tr", { key: post.id }, [
-                          _c("td", [_vm._v(_vm._s(index + 1))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(post.title))]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(
-                                _vm._f("shortLength")(
-                                  post.description,
-                                  30,
-                                  "....."
+                _c("div", { staticClass: "table-responsive" }, [
+                  _c(
+                    "table",
+                    {
+                      staticClass:
+                        "table table-striped table-hover table-bordered",
+                      attrs: { id: "datatable" }
+                    },
+                    [
+                      _vm._m(1),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.allPost, function(post, index) {
+                          return _c("tr", { key: post.id }, [
+                            _c("td", [_vm._v(_vm._s(index + 1))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(post.title))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("shortLength")(
+                                    post.description,
+                                    30,
+                                    "....."
+                                  )
                                 )
                               )
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(post.category.name))]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c("img", {
-                              attrs: {
-                                src: post.content,
-                                width: "40",
-                                height: "50"
-                              }
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v(
-                              _vm._s(_vm._f("dateFormat")(post.created_at))
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _vm._m(2, true)
-                        ])
-                      }),
-                      0
-                    )
-                  ]
-                )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(post.category.name))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("img", {
+                                attrs: {
+                                  src:
+                                    "https://sgp1.digitaloceanspaces.com/" +
+                                    post.content,
+                                  width: "40",
+                                  height: "50"
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm._f("dateFormat")(post.created_at))
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c(
+                                "span",
+                                [
+                                  _vm._m(2, true),
+                                  _vm._v(" "),
+                                  _c(
+                                    "router-link",
+                                    {
+                                      staticClass: "btn btn-sm btn-warning",
+                                      attrs: {
+                                        to: "/edit-post/" + post.id,
+                                        title: "Edit Post"
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "fa fa-pencil-square-o"
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-sm btn-danger",
+                                      attrs: { title: "Delete Post" },
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.deletePost(post.id)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fa fa-trash" })]
+                                  )
+                                ],
+                                1
+                              )
+                            ])
+                          ])
+                        }),
+                        0
+                      )
+                    ]
+                  )
+                ])
               ])
             ])
           ])
@@ -68294,34 +68817,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "a",
-        {
-          staticClass: "btn btn-sm btn-primary",
-          attrs: { href: "", title: "View Post" }
-        },
-        [_c("i", { staticClass: "fa fa-eye" })]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "btn btn-sm btn-warning",
-          attrs: { href: "", title: "Edit Post" }
-        },
-        [_c("i", { staticClass: "fa fa-pencil-square-o" })]
-      ),
-      _vm._v(" "),
-      _c(
-        "a",
-        {
-          staticClass: "btn btn-sm btn-danger",
-          attrs: { href: "", title: "Delete Post" }
-        },
-        [_c("i", { staticClass: "fa fa-trash" })]
-      )
-    ])
+    return _c(
+      "a",
+      {
+        staticClass: "btn btn-sm btn-primary",
+        attrs: { href: "", title: "View Post" }
+      },
+      [_c("i", { staticClass: "fa fa-eye" })]
+    )
   }
 ]
 render._withStripped = true

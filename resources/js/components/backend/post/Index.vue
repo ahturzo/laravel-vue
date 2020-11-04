@@ -25,8 +25,9 @@
                         </div>
                         <div class="card-content collapse show">
                             <div class="card-body card-dashboard">
-                                <table class="table table-striped table-hover table-bordered default-ordering" id="datatable">
-                                    <thead>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover table-bordered" id="datatable">
+                                        <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Title</th>
@@ -36,23 +37,27 @@
                                             <th>Created at</th>
                                             <th>Action</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         <tr v-for="(post,index) in allPost" :key="post.id">
                                             <td>{{ index+1 }}</td>
                                             <td>{{ post.title }}</td>
                                             <td>{{ post.description | shortLength(30, '.....') }}</td>
                                             <td>{{ post.category.name }}</td>
-                                            <td><img :src="post.content" width="40" height="50"></td>
+                                            <td><img :src="'https://sgp1.digitaloceanspaces.com/'+post.content" width="40" height="50"></td>
                                             <td>{{ post.created_at | dateFormat }}</td>
                                             <td>
-                                                <a href="" class="btn btn-sm btn-primary" title="View Post"><i class="fa fa-eye"></i></a>
-                                                <a href="" class="btn btn-sm btn-warning" title="Edit Post"><i class="fa fa-pencil-square-o"></i></a>
-                                                <a href="" class="btn btn-sm btn-danger" title="Delete Post"><i class="fa fa-trash"></i></a>
+                                                <span>
+                                                    <a href="" class="btn btn-sm btn-primary" title="View Post"><i class="fa fa-eye"></i></a>
+                                                    <router-link :to="`/edit-post/${post.id}`" class="btn btn-sm btn-warning" title="Edit Post"><i class="fa fa-pencil-square-o"></i></router-link>
+                                                    <button @click.prevent="deletePost(post.id)" class="btn btn-sm btn-danger" title="Delete Post"><i class="fa fa-trash"></i></button>
+                                                </span>
+
                                             </td>
                                         </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -89,10 +94,37 @@
         },
         methods: {
             jqueryFunction: function () {
-                $('#datatable').DataTable({
-                    "responsive": true,
-                    "autoWidth": false,
-                });
+                $('#datatable').DataTable();
+            },
+            deletePost(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete this Post???",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Vue.axios.delete('post/'+id,{_method: 'delete'})
+                            .then((response) => {
+                                console.log(response.data)
+                                // this.$store.dispatch('allPost');
+                                // Toast.fire({
+                                //     icon: 'success',
+                                //     title: 'Post Deleted successfully'
+                                // });
+                            })
+                            .catch((e) => {
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: e.response.data.message
+                                });
+                            })
+
+                    }
+                })
             }
         }
     }

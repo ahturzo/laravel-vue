@@ -56,7 +56,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="file" class="text-danger"><b style="color:#00008B;">Content</b> *</label>
-                                                <input @change="changePhoto($event)" type="file" id="file" name="content" class="form-control" :class="{ 'is-invalid': form.errors.has('content') }">
+                                                <input @change="changePhoto($event)" type="file" accept="video, image" id="file" name="content" class="form-control" :class="{ 'is-invalid': form.errors.has('content') }">
                                                 <has-error :form="form" field="content"></has-error>
                                                 <img :src="form.content" width="80" height="80">
                                             </div>
@@ -127,32 +127,42 @@
             changePhoto(event)
             {
                 let file = event.target.files[0];
-                let reader = new FileReader();
-                reader.onload = event => {
-                    this.form.content = event.target.result
-                    // console.log(e.target.result)
-                };
-
-                reader.readAsDataURL(file);
+                if(file.size > 1073741824){
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: "File can't greater than 1GB!!!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+                else
+                {
+                    let reader = new FileReader();
+                    reader.onload = event => {
+                        this.form.content = event.target.result
+                    };
+                    reader.readAsDataURL(file);
+                }
             },
             addPost(){
                 this.form.post('/post')
                     .then((response) => {
-                        console.log(response.data)
-                        // this.$router.push('/all-post')
-                        //
-                        // Toast.fire({
-                        //     icon: 'success',
-                        //     title: 'Post created successfully!!!'
-                        // })
+                        this.$router.push('/all-post')
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Post created successfully!!!'
+                        })
                     })
                     .catch((e) => {
+                        console.log(e.response.data.message)
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
                             title: e.response.data.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 50000
                         })
                     })
             }

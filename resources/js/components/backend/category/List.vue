@@ -25,27 +25,30 @@
                         </div>
                         <div class="card-content collapse show">
                             <div class="card-body card-dashboard">
-                                <table class="table table-striped table-bordered default-ordering" id="datatable">
-                                    <thead>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered default-ordering" id="datatable">
+
+                                        <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Created at</th>
                                             <th>Action</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         <tr v-for="(category,index) in getAllCategory" :key="category.id">
                                             <td>{{ index+1 }}</td>
                                             <td>{{ category.name }}</td>
                                             <td>{{ category.created_at | dateFormat }}</td>
                                             <td>
                                                 <router-link :to="`/edit-category/${category.id}`" class="btn btn-sm btn-warning" title="Edit Category"><i class="fa fa-pencil-square-o"></i></router-link>
-                                                <a href="" @click.prevent="deleteCategory(category.id)" class="btn btn-sm btn-danger" title="Delete Category"><i class="fa fa-trash"></i></a>
+                                                <a @click.prevent="deleteCategory(category.id)" class="btn btn-sm btn-danger" title="Delete Category"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,10 +85,7 @@
         },
         methods: {
             jqueryFunction: function () {
-                $('#datatable').DataTable({
-                    "responsive": true,
-                    "autoWidth": false,
-                });
+                $('#datatable').DataTable();
             },
             deleteCategory(id){
                 Swal.fire({
