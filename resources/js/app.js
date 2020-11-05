@@ -38,6 +38,14 @@ Vue.component(AlertError.name, AlertError)
 import Swal from 'sweetalert2'
 window.Swal = Swal;
 
+// dropify
+import VueDropify from 'vue-dropify';
+export default {
+    components: {
+        'vue-dropify': VueDropify
+    }
+}
+
 // toaster
 const Toast = Swal.mixin({
     toast: true,
@@ -60,5 +68,5 @@ const router = new VueRouter({
 const app = new Vue({
     el: '#app',
     router,
-    store
+    store,
 });

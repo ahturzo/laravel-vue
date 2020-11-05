@@ -56,9 +56,8 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="file" class="text-danger"><b style="color:#00008B;">Content</b> *</label>
-                                                <input @change="changePhoto($event)" type="file" accept="video, image" id="file" name="content" class="form-control" :class="{ 'is-invalid': form.errors.has('content') }">
+                                                <input @change="changePhoto($event)" type="file" accept="video, image" id="file" class="dropify" :class="{ 'is-invalid': form.errors.has('content') }">
                                                 <has-error :form="form" field="content"></has-error>
-                                                <img :src="form.content" width="80" height="80">
                                             </div>
                                         </div>
                                     </div>
@@ -82,11 +81,14 @@
 </template>
 
 <script>
+    // import VueDropify from 'vue-dropify';
+
     export default {
         name: "Create",
         created() {
             var scripts = [
-                "robust/app-assets/vendors/js/forms/select/select2.full.min.js"
+                "robust/app-assets/vendors/js/forms/select/select2.full.min.js",
+                "dropify/js/dropify.min.js"
             ];
             scripts.forEach(script => {
                 let tag = document.createElement("script");
@@ -123,6 +125,7 @@
         methods:{
             jqueryFunction: function () {
                 $('.select2').select2();
+                $('.dropify').dropify();
             },
             changePhoto(event)
             {
@@ -172,4 +175,5 @@
 
 <style scoped>
     @import '/robust/app-assets/vendors/css/forms/selects/select2.min.css';
+    @import '/dropify/css/dropify.min.css';
 </style>

@@ -44,7 +44,7 @@
                                             <td>{{ post.title }}</td>
                                             <td>{{ post.description | shortLength(30, '.....') }}</td>
                                             <td>{{ post.category.name }}</td>
-                                            <td><img :src="'https://sgp1.digitaloceanspaces.com/'+post.content" width="40" height="50"></td>
+                                            <td><img :src="endpoint+post.content" width="40" height="50"></td>
                                             <td>{{ post.created_at | dateFormat }}</td>
                                             <td>
                                                 <span>
@@ -70,6 +70,7 @@
 <script>
     export default {
         name: "Index",
+        props: ['endpoint'],
         created() {
             var scripts = [
                 "robust/app-assets/vendors/js/tables/datatable/datatables.min.js"
