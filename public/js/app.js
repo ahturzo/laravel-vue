@@ -2913,7 +2913,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-// import VueDropify from 'vue-dropify';
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Create",
   created: function created() {
@@ -2933,8 +2932,7 @@ __webpack_require__.r(__webpack_exports__);
         description: '',
         content: ''
       }),
-      editorConfig: {// The configuration of the editor.
-      }
+      editorConfig: {}
     };
   },
   mounted: function mounted() {
@@ -2987,7 +2985,6 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Post created successfully!!!'
         });
       })["catch"](function (e) {
-        console.log(e.response.data.message);
         Swal.fire({
           position: 'top-end',
           icon: 'error',
@@ -68004,7 +68001,6 @@ var render = function() {
                               attrs: {
                                 type: "text",
                                 id: "title",
-                                name: "title",
                                 placeholder: "Enter Blog Title"
                               },
                               domProps: { value: _vm.form.title },
@@ -68054,6 +68050,7 @@ var render = function() {
                                     "category_id"
                                   )
                                 },
+                                staticStyle: { width: "100%" },
                                 attrs: { id: "category_id" },
                                 on: {
                                   change: function($event) {
@@ -68077,9 +68074,17 @@ var render = function() {
                                 }
                               },
                               [
-                                _c("option", { attrs: { value: "" } }, [
-                                  _vm._v("Select Post Category...")
-                                ]),
+                                _c(
+                                  "option",
+                                  {
+                                    attrs: {
+                                      value: "",
+                                      disabled: "",
+                                      selected: ""
+                                    }
+                                  },
+                                  [_vm._v("Select Post Category...")]
+                                ),
                                 _vm._v(" "),
                                 _vm._l(_vm.getAllCategory, function(category) {
                                   return _c(

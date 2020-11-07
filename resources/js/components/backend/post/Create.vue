@@ -29,7 +29,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="title" class="text-danger"><b style="color:#00008B;">Title</b> *</label>
-                                                <input type="text" id="title" name="title" class="form-control" :class="{ 'is-invalid': form.errors.has('title') }" placeholder="Enter Blog Title" v-model="form.title">
+                                                <input type="text" id="title" class="form-control" :class="{ 'is-invalid': form.errors.has('title') }" placeholder="Enter Blog Title" v-model="form.title">
                                                 <has-error :form="form" field="title"></has-error>
                                             </div>
                                         </div>
@@ -37,8 +37,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="category_id" class="text-danger"><b style="color:#00008B;">Category</b> *</label>
-                                                <select id="category_id" class="form-control" :class="{ 'is-invalid': form.errors.has('category_id') }" v-model="form.category_id">
-                                                    <option value="">Select Post Category...</option>
+                                                <select id="category_id" class="form-control" :class="{ 'is-invalid': form.errors.has('category_id') }" v-model="form.category_id" style="width: 100%;">
+                                                    <option value="" disabled selected>Select Post Category...</option>
                                                     <option v-for="category in getAllCategory" :value="category.id">{{ category.name }}</option>
                                                 </select>
                                                 <has-error :form="form" field="category_id"></has-error>
@@ -81,8 +81,6 @@
 </template>
 
 <script>
-    // import VueDropify from 'vue-dropify';
-
     export default {
         name: "Create",
         created() {
@@ -106,7 +104,7 @@
                     content: ''
                 }),
                 editorConfig: {
-                    // The configuration of the editor.
+
                 }
             }
         },
@@ -159,7 +157,6 @@
                         })
                     })
                     .catch((e) => {
-                        console.log(e.response.data.message)
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',

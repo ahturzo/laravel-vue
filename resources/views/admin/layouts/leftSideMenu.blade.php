@@ -13,12 +13,6 @@
                     <li><router-link class="menu-item" to="all-post" data-i18n="nav.dash.fitness">All Post</router-link></li>
                 </ul>
             </li>
-
-            <li class=" nav-item">
-                <router-link to="category-list"><i class="icon-home"></i>
-                    <span class="menu-title" data-i18n="nav.dash.main">Category</span>
-                </router-link>
-            </li>
         </ul>
     </div>
 </div>
