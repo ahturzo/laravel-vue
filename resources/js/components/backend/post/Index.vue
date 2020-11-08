@@ -31,7 +31,6 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Title</th>
-                                            <th>Description</th>
                                             <th>Category</th>
                                             <th>Content</th>
                                             <th>Created at</th>
@@ -42,7 +41,6 @@
                                         <tr v-for="(post,index) in allPost" :key="post.id">
                                             <td>{{ index+1 }}</td>
                                             <td>{{ post.title }}</td>
-                                            <td>{{ post.description | shortLength(30, '.....') }}</td>
                                             <td>{{ post.category.name }}</td>
                                             <td><img :src="endpoint+post.content" width="40" height="50"></td>
                                             <td>{{ post.created_at | dateFormat }}</td>
@@ -110,12 +108,11 @@
                     if (result.isConfirmed) {
                         Vue.axios.delete('post/'+id,{_method: 'delete'})
                             .then((response) => {
-                                console.log(response.data)
-                                // this.$store.dispatch('allPost');
-                                // Toast.fire({
-                                //     icon: 'success',
-                                //     title: 'Post Deleted successfully'
-                                // });
+                                this.$store.dispatch('allPost');
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Post Deleted successfully'
+                                });
                             })
                             .catch((e) => {
                                 Toast.fire({
