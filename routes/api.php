@@ -21,3 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('allCategory', 'PublicController@allCategory');
 Route::get('allBlog', 'PublicController@allBlog');
 Route::get('blogDetails/{id}', 'PublicController@blogDetails');
+Route::get('blogSearch', 'PublicController@blogSearch');
